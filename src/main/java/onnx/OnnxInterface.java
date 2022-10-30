@@ -1,6 +1,5 @@
 package onnx;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,10 +7,11 @@ import org.bioimageanalysis.icy.deeplearning.exceptions.LoadModelException;
 import org.bioimageanalysis.icy.deeplearning.exceptions.RunModelException;
 import org.bioimageanalysis.icy.deeplearning.tensor.Tensor;
 import org.bioimageanalysis.icy.deeplearning.utils.DeepLearningInterface;
-import org.bioimageanalysis.icy.tensorflow.v1.tensor.ImgLib2Builder;
-import org.bioimageanalysis.icy.tensorflow.v1.tensor.TensorBuilder;
+import org.bioimageanalysis.icy.onnx.tensor.ImgLib2Builder;
+import org.bioimageanalysis.icy.onnx.tensor.TensorBuilder;
 
 import ai.onnxruntime.OnnxTensor;
+import ai.onnxruntime.OnnxValue;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 import ai.onnxruntime.OrtSession;
@@ -21,11 +21,10 @@ import ai.onnxruntime.OrtSession.SessionOptions.OptLevel;
 
 
 /**
- * This plugin includes the libraries to convert back and forth TensorFlow 1 to Sequences and IcyBufferedImages.
+ * This plugin includes the libraries to convert back and forth Onnx to ImgLib2 Tensors.
  * 
- * @see IcyBufferedImageBuilder IcyBufferedImageBuilder: Create images from tensors.
- * @see Nd4fBuilder SequenceBuilder: Create sequences from tensors.
- * @see TensorBuilder TensorBuilder: Create tensors from images and sequences.
+ * @see ImgLib2Builder ImgLib2Builder: Create ImgLib2 Tensors from tensors.
+ * @see TensorBuilder TensorBuilder: Create tensors from ImgLib2 Tensors.
  * @author Carlos Garcia Lopez de Haro 
  */
 public class OnnxInterface implements DeepLearningInterface
@@ -48,8 +47,11 @@ public class OnnxInterface implements DeepLearningInterface
 			env = OrtEnvironment.getEnvironment();
 			opts = new SessionOptions();
 			opts.setOptimizationLevel(OptLevel.BASIC_OPT);
-			session = env.createSession(modelFolder, opts);
+			session = env.createSession("/Users/Cgarcia/git/deep-icy/models/HPA Bestfitting InceptionV3_30102022_133313/bestfitting-inceptionv3-single-cell.onnx", opts);
 		} catch (OrtException e) {
+			closeModel();
+			throw new LoadModelException("Error loading Onnx model", e.getCause().toString());
+		} catch (Exception e) {
 			closeModel();
 			throw new LoadModelException("Error loading Onnx model", e.getCause().toString());
 		}
@@ -101,8 +103,14 @@ public class OnnxInterface implements DeepLearningInterface
 	public static List<Tensor<?>> fillOutputTensors(Result outputNDArrays, List<Tensor<?>> outputTensors) throws RunModelException{
 		if (outputNDArrays.size() != outputTensors.size())
 			throw new RunModelException(outputNDArrays.size(), outputTensors.size());
-		for (int i = 0; i < outputNDArrays.size(); i ++) {
-			outputTensors.get(i).setData(ImgLib2Builder.build(outputNDArrays.get(i)));
+		for (Tensor tt : outputTensors) {
+			try {
+				tt.setData(ImgLib2Builder.build(outputNDArrays.get(tt.getName()).get().getValue()));
+			} catch (IllegalArgumentException | OrtException e) {
+				e.printStackTrace();
+				throw new RunModelException("Unable to recover value of output tensor: " + tt.getName()
+								+ System.lineSeparator() + e.getCause().toString());
+			}
 		}
 		return outputTensors;
 	}
@@ -110,8 +118,12 @@ public class OnnxInterface implements DeepLearningInterface
 	@Override
 	public void closeModel() {
 		if (env != null) {
-			env.close();
-			env = null;
+			try {
+				env.close();
+				env = null;
+			} catch (Exception e) {
+				session = null;
+			}
 		}
 		if (opts != null) {
 			opts.close();
