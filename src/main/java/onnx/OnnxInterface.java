@@ -47,7 +47,7 @@ public class OnnxInterface implements DeepLearningInterface
 			env = OrtEnvironment.getEnvironment();
 			opts = new SessionOptions();
 			opts.setOptimizationLevel(OptLevel.BASIC_OPT);
-			session = env.createSession("/Users/Cgarcia/git/deep-icy/models/HPA Bestfitting InceptionV3_30102022_133313/bestfitting-inceptionv3-single-cell.onnx", opts);
+			session = env.createSession(modelSource, opts);
 		} catch (OrtException e) {
 			closeModel();
 			throw new LoadModelException("Error loading Onnx model", e.getCause().toString());
