@@ -1,17 +1,16 @@
-package onnx;
+package org.bioimageanalysis.icy.deeplearning.onnx;
 
 import java.util.HashMap;
 import java.util.List;
 
 import org.bioimageanalysis.icy.deeplearning.exceptions.LoadModelException;
 import org.bioimageanalysis.icy.deeplearning.exceptions.RunModelException;
+import org.bioimageanalysis.icy.deeplearning.onnx.tensor.ImgLib2Builder;
+import org.bioimageanalysis.icy.deeplearning.onnx.tensor.TensorBuilder;
 import org.bioimageanalysis.icy.deeplearning.tensor.Tensor;
 import org.bioimageanalysis.icy.deeplearning.utils.DeepLearningInterface;
-import org.bioimageanalysis.icy.onnx.tensor.ImgLib2Builder;
-import org.bioimageanalysis.icy.onnx.tensor.TensorBuilder;
 
 import ai.onnxruntime.OnnxTensor;
-import ai.onnxruntime.OnnxValue;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 import ai.onnxruntime.OrtSession;
@@ -59,7 +58,7 @@ public class OnnxInterface implements DeepLearningInterface
 	}
 
 	@Override
-	public List<Tensor<?>> run(List<Tensor<?>> inputTensors, List<Tensor<?>> outputTensors) throws RunModelException {
+	public void run(List<Tensor<?>> inputTensors, List<Tensor<?>> outputTensors) throws RunModelException {
 		Result output;
 		HashMap<String, OnnxTensor> inputMap = new HashMap<String, OnnxTensor>();
 		try {
@@ -86,7 +85,6 @@ public class OnnxInterface implements DeepLearningInterface
 			tt = null;
 		}
 		output.close();
-		return outputTensors;
 	}
 	
 	/**

@@ -1,4 +1,4 @@
-package org.bioimageanalysis.icy.tensorflow.v1.tensor;
+package org.bioimageanalysis.icy.deeplearning.onnx.tensor;
 
 
 import net.imglib2.Cursor;

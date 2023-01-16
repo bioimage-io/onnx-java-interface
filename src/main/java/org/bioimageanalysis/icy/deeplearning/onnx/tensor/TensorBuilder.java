@@ -1,4 +1,4 @@
-package org.bioimageanalysis.icy.tensorflow.v1.tensor;
+package org.bioimageanalysis.icy.deeplearning.onnx.tensor;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -181,7 +181,7 @@ public final class TensorBuilder
         	flatArr[flatPos] = val;
 		}
 		FloatBuffer buff = FloatBuffer.wrap(flatArr);
-		OnnxTensor tensor = OnnxTensor.createTensor(null, buff, tensorShape);
+		OnnxTensor tensor = OnnxTensor.createTensor(env, buff, tensorShape);
 	 	return tensor;
     }
 
