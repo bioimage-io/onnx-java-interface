@@ -3,12 +3,12 @@ package org.bioimageanalysis.icy.deeplearning.onnx;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bioimageanalysis.icy.deeplearning.engine.DeepLearningEngineInterface;
 import org.bioimageanalysis.icy.deeplearning.exceptions.LoadModelException;
 import org.bioimageanalysis.icy.deeplearning.exceptions.RunModelException;
 import org.bioimageanalysis.icy.deeplearning.onnx.tensor.ImgLib2Builder;
 import org.bioimageanalysis.icy.deeplearning.onnx.tensor.TensorBuilder;
 import org.bioimageanalysis.icy.deeplearning.tensor.Tensor;
-import org.bioimageanalysis.icy.deeplearning.utils.DeepLearningInterface;
 
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
@@ -26,7 +26,7 @@ import ai.onnxruntime.OrtSession.SessionOptions.OptLevel;
  * @see TensorBuilder TensorBuilder: Create tensors from ImgLib2 Tensors.
  * @author Carlos Garcia Lopez de Haro 
  */
-public class OnnxInterface implements DeepLearningInterface
+public class OnnxInterface implements DeepLearningEngineInterface
 {
 
     /**
