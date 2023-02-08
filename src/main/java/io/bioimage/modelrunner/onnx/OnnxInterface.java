@@ -1,14 +1,14 @@
-package org.bioimageanalysis.icy.deeplearning.onnx;
+package io.bioimage.modelrunner.onnx;
+
+import io.bioimage.modelrunner.engine.DeepLearningEngineInterface;
+import io.bioimage.modelrunner.exceptions.LoadModelException;
+import io.bioimage.modelrunner.exceptions.RunModelException;
+import io.bioimage.modelrunner.onnx.tensor.ImgLib2Builder;
+import io.bioimage.modelrunner.onnx.tensor.TensorBuilder;
+import io.bioimage.modelrunner.tensor.Tensor;
 
 import java.util.HashMap;
 import java.util.List;
-
-import org.bioimageanalysis.icy.deeplearning.engine.DeepLearningEngineInterface;
-import org.bioimageanalysis.icy.deeplearning.exceptions.LoadModelException;
-import org.bioimageanalysis.icy.deeplearning.exceptions.RunModelException;
-import org.bioimageanalysis.icy.deeplearning.onnx.tensor.ImgLib2Builder;
-import org.bioimageanalysis.icy.deeplearning.onnx.tensor.TensorBuilder;
-import org.bioimageanalysis.icy.deeplearning.tensor.Tensor;
 
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
