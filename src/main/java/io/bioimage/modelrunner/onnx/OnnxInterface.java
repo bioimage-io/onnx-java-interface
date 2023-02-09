@@ -88,15 +88,14 @@ public class OnnxInterface implements DeepLearningEngineInterface
 	}
 	
 	/**
-	 * Create the list a list of output tensors agnostic to the Deep Learning engine
-	 * that can be readable by Deep Icy
-	 * @param outputTensors
-	 * 	an NDList containing NDArrays (tensors)
-	 * @param outputTensors2
-	 * 	the names given to the tensors by the model
+	 * Create the list a list of output tensors agnostic to the Deep Learning
+	 * engine that can be readable by Deep Icy
+	 * 
+	 * @param outputNDArrays an NDList containing NDArrays (tensors)
+	 * @param outputTensors the names given to the tensors by the model
 	 * @return a list with Deep Learning framework agnostic tensors
-	 * @throws RunModelException If the number of tensors expected is not the same as the number of
-	 * 	Tensors outputed by the model
+	 * @throws RunModelException If the number of tensors expected is not the same
+	 *           as the number of Tensors outputed by the model
 	 */
 	public static List<Tensor<?>> fillOutputTensors(Result outputNDArrays, List<Tensor<?>> outputTensors) throws RunModelException{
 		if (outputNDArrays.size() != outputTensors.size())
