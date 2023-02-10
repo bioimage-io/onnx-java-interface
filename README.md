@@ -1,6 +1,6 @@
 [![Build Status](https://github.com/bioimage-io/onnx-java-interface/actions/workflows/build.yml/badge.svg)](https://github.com/bioimage-io/onnx-java-interface/actions/workflows/build.yml)
 
-# onnx-java-interface
+# dl-modelrunner-java: onnx
 
 JAR file at: https://maven.scijava.org/service/local/artifact/maven/redirect?r=releases&g=io.bioimage&a=dl-modelrunner-onnx&v=0.1.0&e=jar
 
