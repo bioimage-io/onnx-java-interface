@@ -1,15 +1,17 @@
+[![Build Status](https://github.com/bioimage-io/onnx-java-interface/actions/workflows/build.yml/badge.svg)](https://github.com/bioimage-io/onnx-java-interface/actions/workflows/build.yml)
+
 # onnx-java-interface
 
-JAR file at: https://icy-nexus.pasteur.fr/repository/icy-core/org/bioimageanalysis/icy/onnx-interface/0.0.1/onnx-interface-0.0.1.jar
+JAR file at: https://maven.scijava.org/service/local/artifact/maven/redirect?r=releases&g=io.bioimage&a=dl-modelrunner-onnx&v=0.1.0&e=jar
 
 
 To use with maven:
 
 ```
 <dependency>
-  <groupId>org.bioimageanalysis.icy</groupId>
-  <artifactId>onnx-interface</artifactId>
-  <version>0.0.1</version>
+  <groupId>io.bioimage</groupId>
+  <artifactId>dl-modelrunner-onnx</artifactId>
+  <version>0.1.0</version>
 </dependency>
 ```
 
@@ -17,7 +19,7 @@ and add to </repositories> the following:
 
 ```
 <repository>
-  <id>icy</id>
-  <url>https://icy-nexus.pasteur.fr/repository/Icy/</url>
+  <id>scijava.public</id>
+  <url>https://maven.scijava.org/content/groups/public</url>
 </repository>
 ```
