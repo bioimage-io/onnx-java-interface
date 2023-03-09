@@ -53,10 +53,19 @@ import ai.onnxruntime.OrtSession.SessionOptions.OptLevel;
 
 
 /**
- * This plugin includes the libraries to convert back and forth Onnx to ImgLib2 Tensors.
+ * Class to that communicates with the dl-model runner, see 
+ * @see <a href="https://github.com/bioimage-io/model-runner-java">dlmodelrunner</a>
+ * to execute Onnx models with the Onnx Java API.
+ * This class implements the interface {@link DeepLearningEngineInterface} to get the 
+ * agnostic {@link io.bioimage.modelrunner.tensor.Tensor}, convert them into 
+ * {@link OnnxTensor}, execute a Onnx Deep Learning model on them and
+ * convert the results back to {@link io.bioimage.modelrunner.tensor.Tensor} to send them 
+ * to the main program in an agnostic manner.
  * 
- * @see ImgLib2Builder ImgLib2Builder: Create ImgLib2 Tensors from tensors.
- * @see TensorBuilder TensorBuilder: Create tensors from ImgLib2 Tensors.
+ * {@link ImgLib2Builder}. Creates ImgLib2 images for the backend
+ *  of {@link io.bioimage.modelrunner.tensor.Tensor} from {@link OnnxTensor}
+ * {@link TensorBuilder}. Converts {@link io.bioimage.modelrunner.tensor.Tensor} into {@link OnnxTensor}
+ * 
  * @author Carlos Garcia Lopez de Haro 
  */
 public class OnnxInterface implements DeepLearningEngineInterface
@@ -66,13 +75,28 @@ public class OnnxInterface implements DeepLearningEngineInterface
      * The loaded Onnx model
      */
 	private OrtSession session;
+	/**
+	 * An variable needed to load Onnx models
+	 */
 	private OrtEnvironment env;
+	/**
+	 * Options used to load a Onnx model
+	 */
 	private OrtSession.SessionOptions opts;
-	
+
+	/**
+	 * Constructor for the interface. It is going to be called from the 
+	 * dlmodel-runner
+	 */
     public OnnxInterface()
     {
     }
 
+	/**
+	 * {@inheritDoc}
+	 * 
+     * Load a Onnx model. 
+	 */
 	@Override
 	public void loadModel(String modelFolder, String modelSource) throws LoadModelException {
 		try {
@@ -90,6 +114,13 @@ public class OnnxInterface implements DeepLearningEngineInterface
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Run a Onnx model on the data provided by the {@link Tensor} input list
+	 * and modifies the output list with the results obtained
+	 * 
+	 */
 	@Override
 	public void run(List<Tensor<?>> inputTensors, List<Tensor<?>> outputTensors) throws RunModelException {
 		Result output;
@@ -110,7 +141,7 @@ public class OnnxInterface implements DeepLearningEngineInterface
 		}
         
 		// Fill the agnostic output tensors list with data from the inference result
-		outputTensors = fillOutputTensors(output, outputTensors);
+		fillOutputTensors(output, outputTensors);
 		for (OnnxTensor tt : inputMap.values()) {
 			tt.close();
 		}
@@ -119,32 +150,39 @@ public class OnnxInterface implements DeepLearningEngineInterface
 		}
 		output.close();
 	}
-	
+
 	/**
 	 * Create the list a list of output tensors agnostic to the Deep Learning
 	 * engine that can be readable by Deep Icy
 	 * 
-	 * @param outputNDArrays an NDList containing NDArrays (tensors)
-	 * @param outputTensors the names given to the tensors by the model
-	 * @return a list with Deep Learning framework agnostic tensors
+	 * @param onnxTensors 
+	 * 	a list of Onnx tensors output of the model. The tensors are accessed with the
+	 * 	corresponding names
+	 * @param outputTensors 
+	 * 	list of {@link Tensor} that is going to be filled with the data from the
+	 * 	output Onnx {@link OnnxTensor} of the model executed
 	 * @throws RunModelException If the number of tensors expected is not the same
 	 *           as the number of Tensors outputed by the model
 	 */
-	public static List<Tensor<?>> fillOutputTensors(Result outputNDArrays, List<Tensor<?>> outputTensors) throws RunModelException{
-		if (outputNDArrays.size() != outputTensors.size())
-			throw new RunModelException(outputNDArrays.size(), outputTensors.size());
+	public static void fillOutputTensors(Result onnxTensors, List<Tensor<?>> outputTensors) throws RunModelException{
+		if (onnxTensors.size() != outputTensors.size())
+			throw new RunModelException(onnxTensors.size(), outputTensors.size());
 		for (Tensor tt : outputTensors) {
 			try {
-				tt.setData(ImgLib2Builder.build(outputNDArrays.get(tt.getName()).get().getValue()));
+				tt.setData(ImgLib2Builder.build(onnxTensors.get(tt.getName()).get().getValue()));
 			} catch (IllegalArgumentException | OrtException e) {
 				e.printStackTrace();
 				throw new RunModelException("Unable to recover value of output tensor: " + tt.getName()
 								+ System.lineSeparator() + e.getCause().toString());
 			}
 		}
-		return outputTensors;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Close the model and all the variables needed to load it and execute it
+	 * once it is not needed and set them to null
+	 */
 	@Override
 	public void closeModel() {
 		if (env != null) {
