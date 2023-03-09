@@ -34,8 +34,6 @@
 package io.bioimage.modelrunner.onnx.tensor;
 
 
-import io.bioimage.modelrunner.tensor.Tensor;
-
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -48,7 +46,9 @@ import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
 
 /**
- * A {@link Img} builder for TensorFlow {@link Tensor} objects.
+ * A {@link Img} builder for Onnx {@link OnnxTensor} objects.
+ * Build ImgLib2 objects (backend of {@link io.bioimage.modelrunner.tensor.Tensor})
+ * from Onnx {@link OnnxTensor}
  * 
  * @author Carlos Garcia Lopez de Haro
  */
@@ -62,14 +62,16 @@ public final class ImgLib2Builder
     {
     }
 
-    /**
-		 * Creates a {@link Img} from a given {@link Tensor} and an array with its
-		 * dimensions order.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor.
-		 * @throws IllegalArgumentException If the tensor type is not supported.
-		 */
+	/**
+	 * Creates a {@link Img} from a given {@link OnnxTensor} tensor
+	 * 
+	 * @param <T> 
+	 * 	the possible ImgLib2 datatypes of the image
+	 * @param tensor 
+	 * 	The {@link OnnxTensor} tensor data is read from.
+	 * @return The {@link Img} built from the {@link OnnxTensor} tensor.
+	 * @throws IllegalArgumentException If the {@link OnnxTensor} tensor type is not supported.
+	 */
     @SuppressWarnings("unchecked")
     public static <T extends Type<T>> Img<T> build(Object tensor) throws IllegalArgumentException
     {
@@ -131,11 +133,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned byte-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link ByteType}.
-		 */
+	 * Builds a {@link Img} from a byte[] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The byte[] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link ByteType}.
+	 */
     private static Img<ByteType> buildFromTensorByte(byte[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
@@ -152,11 +155,12 @@ public final class ImgLib2Builder
 	}
 
     /**
-		 * Builds a {@link Img} from a unsigned byte-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link ByteType}.
-		 */
+	 * Builds a {@link Img} from a byte[][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The byte[][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link ByteType}.
+	 */
     private static Img<ByteType> buildFromTensorByte(byte[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
@@ -173,11 +177,12 @@ public final class ImgLib2Builder
 	}
 
     /**
-		 * Builds a {@link Img} from a unsigned byte-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link ByteType}.
-		 */
+	 * Builds a {@link Img} from a byte[][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The byte[][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link ByteType}.
+	 */
     private static Img<ByteType> buildFromTensorByte(byte[][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, tensor[1].length};
@@ -194,11 +199,12 @@ public final class ImgLib2Builder
 	}
 
     /**
-		 * Builds a {@link Img} from a unsigned byte-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link ByteType}.
-		 */
+	 * Builds a {@link Img} from a byte[][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The byte[][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link ByteType}.
+	 */
     private static Img<ByteType> buildFromTensorByte(byte[][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, tensor[1].length, tensor[2].length};
@@ -215,11 +221,12 @@ public final class ImgLib2Builder
 	}
 
     /**
-		 * Builds a {@link Img} from a unsigned byte-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link ByteType}.
-		 */
+	 * Builds a {@link Img} from a byte[][][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The byte[][][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link ByteType}.
+	 */
     private static Img<ByteType> buildFromTensorByte(byte[][][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -238,11 +245,12 @@ public final class ImgLib2Builder
 	}
 
     /**
-		 * Builds a {@link Img} from a unsigned integer-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The sequence built from the tensor of type {@link IntType}.
-		 */
+	 * Builds a {@link Img} from a int[][][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The int[][][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link IntType}.
+	 */
     private static Img<IntType> buildFromTensorInt(int[][][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -261,11 +269,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned integer-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The sequence built from the tensor of type {@link IntType}.
-		 */
+	 * Builds a {@link Img} from a int[][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The int[][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link IntType}.
+	 */
     private static Img<IntType> buildFromTensorInt(int[][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -284,11 +293,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned integer-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The sequence built from the tensor of type {@link IntType}.
-		 */
+	 * Builds a {@link Img} from a int[][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The int[][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link IntType}.
+	 */
     private static Img<IntType> buildFromTensorInt(int[][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -306,11 +316,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned integer-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The sequence built from the tensor of type {@link IntType}.
-		 */
+	 * Builds a {@link Img} from a int[][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The int[][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link IntType}.
+	 */
     private static Img<IntType> buildFromTensorInt(int[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
@@ -327,11 +338,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned integer-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The sequence built from the tensor of type {@link IntType}.
-		 */
+	 * Builds a {@link Img} from a int[] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The int[] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link IntType}.
+	 */
     private static Img<IntType> buildFromTensorInt(int[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
@@ -348,11 +360,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned float-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link FloatType}.
-		 */
+	 * Builds a {@link Img} from a float[][][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The float[][][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link FloatType}.
+	 */
     private static Img<FloatType> buildFromTensorFloat(float[][][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -371,11 +384,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned float-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link FloatType}.
-		 */
+	 * Builds a {@link Img} from a float[][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The float[][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link FloatType}.
+	 */
     private static Img<FloatType> buildFromTensorFloat(float[][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -394,11 +408,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned float-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link FloatType}.
-		 */
+	 * Builds a {@link Img} from a float[][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The float[][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link FloatType}.
+	 */
     private static Img<FloatType> buildFromTensorFloat(float[][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -417,11 +432,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned float-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link FloatType}.
-		 */
+	 * Builds a {@link Img} from a float[][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The float[][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link FloatType}.
+	 */
     private static Img<FloatType> buildFromTensorFloat(float[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
@@ -438,11 +454,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned float-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link FloatType}.
-		 */
+	 * Builds a {@link Img} from a float[] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The float[] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link FloatType}.
+	 */
     private static Img<FloatType> buildFromTensorFloat(float[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
@@ -459,11 +476,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a double[][][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The double[][][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link DoubleType}.
+	 */
     private static Img<DoubleType> buildFromTensorDouble(double[][][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -482,11 +500,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a double[][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The double[][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link DoubleType}.
+	 */
     private static Img<DoubleType> buildFromTensorDouble(double[][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -505,11 +524,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a double[][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The double[][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link DoubleType}.
+	 */
     private static Img<DoubleType> buildFromTensorDouble(double[][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -528,11 +548,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a double[][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The double [][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link DoubleType}.
+	 */
     private static Img<DoubleType> buildFromTensorDouble(double[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
@@ -549,11 +570,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a double[] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The double[] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link DoubleType}.
+	 */
     private static Img<DoubleType> buildFromTensorDouble(double[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
@@ -570,11 +592,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a long[][][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The long[][][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link LongType}.
+	 */
     private static Img<LongType> buildFromTensorLong(long[][][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -593,11 +616,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a long[][][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The long[][][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link LongType}.
+	 */
     private static Img<LongType> buildFromTensorLong(long[][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -616,11 +640,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a long[][][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The long[][][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link LongType}.
+	 */
     private static Img<LongType> buildFromTensorLong(long[][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
@@ -639,11 +664,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a long[][] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The long[][] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link LongType}.
+	 */
     private static Img<LongType> buildFromTensorLong(long[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
@@ -660,11 +686,12 @@ public final class ImgLib2Builder
     }
 
     /**
-		 * Builds a {@link Img} from a unsigned double-typed {@link Tensor}.
-		 * 
-		 * @param tensor The tensor data is read from.
-		 * @return The Img built from the tensor of type {@link DoubleType}.
-		 */
+	 * Builds a {@link Img} from a long[] obtained from a {@link OnnxTensor}
+	 * 
+	 * @param tensor 
+	 * 	The long[] tensor data is read from.
+	 * @return The Img built from the tensor of type {@link LongType}.
+	 */
     private static Img<LongType> buildFromTensorLong(long[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
