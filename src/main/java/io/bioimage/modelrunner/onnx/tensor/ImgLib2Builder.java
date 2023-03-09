@@ -46,9 +46,9 @@ import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
 
 /**
- * A {@link Img} builder for Onnx {@link OnnxTensor} objects.
+ * A {@link Img} builder for Onnx {@link ai.onnxruntime.OnnxTensor} objects.
  * Build ImgLib2 objects (backend of {@link io.bioimage.modelrunner.tensor.Tensor})
- * from Onnx {@link OnnxTensor}
+ * from Onnx {@link ai.onnxruntime.OnnxTensor}
  * 
  * @author Carlos Garcia Lopez de Haro
  */
@@ -63,14 +63,14 @@ public final class ImgLib2Builder
     }
 
 	/**
-	 * Creates a {@link Img} from a given {@link OnnxTensor} tensor
+	 * Creates a {@link Img} from a given {@link ai.onnxruntime.OnnxTensor} tensor
 	 * 
 	 * @param <T> 
 	 * 	the possible ImgLib2 datatypes of the image
 	 * @param tensor 
-	 * 	The {@link OnnxTensor} tensor data is read from.
-	 * @return The {@link Img} built from the {@link OnnxTensor} tensor.
-	 * @throws IllegalArgumentException If the {@link OnnxTensor} tensor type is not supported.
+	 * 	The {@link ai.onnxruntime.OnnxTensor} tensor data is read from.
+	 * @return The {@link Img} built from the {@link ai.onnxruntime.OnnxTensor} tensor.
+	 * @throws IllegalArgumentException If the {@link ai.onnxruntime.OnnxTensor} tensor type is not supported.
 	 */
     @SuppressWarnings("unchecked")
     public static <T extends Type<T>> Img<T> build(Object tensor) throws IllegalArgumentException
@@ -133,7 +133,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a byte[] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a byte[] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The byte[] tensor data is read from.
@@ -155,7 +155,7 @@ public final class ImgLib2Builder
 	}
 
     /**
-	 * Builds a {@link Img} from a byte[][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a byte[][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The byte[][] tensor data is read from.
@@ -177,7 +177,7 @@ public final class ImgLib2Builder
 	}
 
     /**
-	 * Builds a {@link Img} from a byte[][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a byte[][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The byte[][][] tensor data is read from.
@@ -199,7 +199,7 @@ public final class ImgLib2Builder
 	}
 
     /**
-	 * Builds a {@link Img} from a byte[][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a byte[][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The byte[][][][] tensor data is read from.
@@ -221,7 +221,7 @@ public final class ImgLib2Builder
 	}
 
     /**
-	 * Builds a {@link Img} from a byte[][][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a byte[][][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The byte[][][][][] tensor data is read from.
@@ -245,7 +245,7 @@ public final class ImgLib2Builder
 	}
 
     /**
-	 * Builds a {@link Img} from a int[][][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a int[][][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The int[][][][][] tensor data is read from.
@@ -269,7 +269,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a int[][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a int[][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The int[][][][] tensor data is read from.
@@ -293,7 +293,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a int[][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a int[][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The int[][][] tensor data is read from.
@@ -316,7 +316,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a int[][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a int[][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The int[][] tensor data is read from.
@@ -338,7 +338,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a int[] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a int[] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The int[] tensor data is read from.
@@ -360,7 +360,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a float[][][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a float[][][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The float[][][][][] tensor data is read from.
@@ -384,7 +384,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a float[][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a float[][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The float[][][][] tensor data is read from.
@@ -408,7 +408,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a float[][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a float[][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The float[][][] tensor data is read from.
@@ -432,7 +432,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a float[][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a float[][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The float[][] tensor data is read from.
@@ -454,7 +454,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a float[] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a float[] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The float[] tensor data is read from.
@@ -476,7 +476,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a double[][][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a double[][][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The double[][][][][] tensor data is read from.
@@ -500,7 +500,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a double[][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a double[][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The double[][][][] tensor data is read from.
@@ -524,7 +524,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a double[][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a double[][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The double[][][] tensor data is read from.
@@ -548,7 +548,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a double[][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a double[][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The double [][] tensor data is read from.
@@ -570,7 +570,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a double[] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a double[] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The double[] tensor data is read from.
@@ -592,7 +592,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a long[][][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a long[][][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The long[][][][][] tensor data is read from.
@@ -616,7 +616,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a long[][][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a long[][][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The long[][][][] tensor data is read from.
@@ -640,7 +640,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a long[][][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a long[][][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The long[][][] tensor data is read from.
@@ -664,7 +664,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a long[][] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a long[][] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The long[][] tensor data is read from.
@@ -686,7 +686,7 @@ public final class ImgLib2Builder
     }
 
     /**
-	 * Builds a {@link Img} from a long[] obtained from a {@link OnnxTensor}
+	 * Builds a {@link Img} from a long[] obtained from a {@link ai.onnxruntime.OnnxTensor}
 	 * 
 	 * @param tensor 
 	 * 	The long[] tensor data is read from.
