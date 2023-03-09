@@ -57,8 +57,8 @@ import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 
 /**
- * A TensorFlow {@link Tensor} builder for {@link Img} and {@link Tensor}
- * objects.
+ * An Onnx {@link OnnxTensor} builder from {@link Img} and
+ * {@link io.bioimage.modelrunner.tensor.Tensor} objects.
  * 
  * @author Carlos Garcia Lopez de Haro
  */
@@ -72,30 +72,40 @@ public final class TensorBuilder
     {
     }
 
-    /**
-		 * Creates a {@link Tensor} based on the provided {@link Tensor} and the
-		 * desired dimension order for the resulting tensor.
-		 * 
-		 * @param tensor The Tensor to be converted.
-		 * @return The tensor created from the sequence.
-		 * @throws OrtException
-		 * @throws IllegalArgumentException If the ndarray type is not supported.
-		 */
+	/**
+	 * Creates {@link OnnxTensor} instance with the same size and information as the
+	 * given {@link io.bioimage.modelrunner.tensor.Tensor}.
+	 * 
+	 * @param tensor 
+	 * 	The dlmodel-runner {@link io.bioimage.modelrunner.tensor.Tensor} that is
+	 * 	going to be converted into a {@link OnnxTensor} tensor
+	 * @param env
+	 * 	{@link OrtEnvironment} needed to create {@link OnnxTensor}
+	 * @return The created {@link OnnxTensor} tensor.
+	 * @throws IllegalArgumentException If the type of the {@link io.bioimage.modelrunner.tensor.Tensor}
+	 * is not supported
+	 */
     public static OnnxTensor build(Tensor tensor, OrtEnvironment env) throws OrtException
     {
     	return build(tensor.getData(), env);
     }
-
-    /**
-     * Creates a {@link Tensor} based on the provided {@link RandomAccessibleInterval} and the desired dimension order for the resulting tensor.
-     * 
-     * @param rai
-     *        The NDArray to be converted.
-     * @return The tensor created from the sequence.
-     * @throws OrtException 
-     * @throws IllegalArgumentException
-     *         If the ndarray type is not supported.
-     */
+    
+	/**
+	 * Creates {@link OnnxTensor} instance with the same size and information as the
+	 * given {@link RandomAccessibleInterval}.
+	 * 
+     * @param <T>
+     * 	possible ImgLib2 types of the {@link RandomAccessibleInterval}
+	 * @param rai 
+	 * 	The dlmodel-runner {@link RandomAccessibleInterval} that is
+	 * 	going to be converted into a {@link OnnxTensor} tensor
+	 * @param env
+	 * 	{@link OrtEnvironment} needed to create {@link OnnxTensor}
+	 * @return The created {@link OnnxTensor} tensor.
+     * @throws OrtException if there is any Onnx error
+	 * @throws IllegalArgumentException If the type of the {@link io.bioimage.modelrunner.tensor.Tensor}
+	 * is not supported
+	 */
     public static <T extends Type<T>> OnnxTensor build(RandomAccessibleInterval<T> rai, OrtEnvironment env) throws OrtException
     {
     	if (Util.getTypeFromInterval(rai) instanceof ByteType) {
@@ -111,16 +121,18 @@ public final class TensorBuilder
     	}
     }
 
-    /**
-		 * Creates a unsigned byte-typed {@link Tensor} based on the provided
-		 * {@link RandomAccessibleInterval} and the desired dimension order for the
-		 * resulting tensor.
-		 * 
-		 * @param imgTensor The image to be converted.
-		 * @return The Img created from the sequence.
-		 * @throws OrtException
-		 * @throws IllegalArgumentException If the ndarray type is not supported.
-		 */
+	/**
+	 * Creates a {@link OnnxTensor} tensor of type byte from an
+	 * {@link RandomAccessibleInterval} of type {@link ByteType}
+	 * 
+	 * @param imgTensor 
+	 * 	The {@link RandomAccessibleInterval} to fill the tensor with.
+	 * @param env
+	 * 	{@link OrtEnvironment} needed to create {@link OnnxTensor}
+	 * @return The {@link OnnxTensor} tensor filled with the {@link RandomAccessibleInterval} data.
+	 * @throws IllegalArgumentException if the input {@link RandomAccessibleInterval} type is
+	 * not compatible
+	 */
     private static OnnxTensor buildByte(RandomAccessibleInterval<ByteType> imgTensor, OrtEnvironment env) throws OrtException
     {
     	long[] tensorShape = imgTensor.dimensionsAsLongArray();
@@ -147,16 +159,18 @@ public final class TensorBuilder
 	 	return tensor;
     }
 
-    /**
-		 * Creates a integer-typed {@link Tensor} based on the provided
-		 * {@link RandomAccessibleInterval} and the desired dimension order for the
-		 * resulting tensor.
-		 * 
-		 * @param imgTensor The image to be converted.
-		 * @return The tensor created from the Img.
-		 * @throws OrtException
-		 * @throws IllegalArgumentException If the ndarray type is not supported.
-		 */
+	/**
+	 * Creates a {@link OnnxTensor} tensor of type int from an
+	 * {@link RandomAccessibleInterval} of type {@link IntType}
+	 * 
+	 * @param imgTensor 
+	 * 	The {@link RandomAccessibleInterval} to fill the tensor with.
+	 * @param env
+	 * 	{@link OrtEnvironment} needed to create {@link OnnxTensor}
+	 * @return The {@link OnnxTensor} tensor filled with the {@link RandomAccessibleInterval} data.
+	 * @throws IllegalArgumentException if the input {@link RandomAccessibleInterval} type is
+	 * not compatible
+	 */
     private static OnnxTensor buildInt(RandomAccessibleInterval<IntType> imgTensor, OrtEnvironment env) throws OrtException
     {
     	long[] tensorShape = imgTensor.dimensionsAsLongArray();
@@ -183,16 +197,18 @@ public final class TensorBuilder
 	 	return tensor;
     }
 
-    /**
-		 * Creates a float-typed {@link Tensor} based on the provided
-		 * {@link RandomAccessibleInterval} and the desired dimension order for the
-		 * resulting tensor.
-		 * 
-		 * @param imgTensor The image to be converted.
-		 * @return The tensor created from the Img.
-		 * @throws OrtException
-		 * @throws IllegalArgumentException If the ndarray type is not supported.
-		 */
+	/**
+	 * Creates a {@link OnnxTensor} tensor of type float from an
+	 * {@link RandomAccessibleInterval} of type {@link FloatType}
+	 * 
+	 * @param imgTensor 
+	 * 	The {@link RandomAccessibleInterval} to fill the tensor with.
+	 * @param env
+	 * 	{@link OrtEnvironment} needed to create {@link OnnxTensor}
+	 * @return The {@link OnnxTensor} tensor filled with the {@link RandomAccessibleInterval} data.
+	 * @throws IllegalArgumentException if the input {@link RandomAccessibleInterval} type is
+	 * not compatible
+	 */
     private static OnnxTensor buildFloat(RandomAccessibleInterval<FloatType> imgTensor, OrtEnvironment env) throws OrtException
     {
     	long[] tensorShape = imgTensor.dimensionsAsLongArray();
@@ -219,16 +235,18 @@ public final class TensorBuilder
 	 	return tensor;
     }
 
-    /**
-		 * Creates a double-typed {@link Tensor} based on the provided
-		 * {@link RandomAccessibleInterval} and the desired dimension order for the
-		 * resulting tensor.
-		 * 
-		 * @param imgTensor The img to be converted.
-		 * @return The tensor created from the Img.
-		 * @throws OrtException
-		 * @throws IllegalArgumentException If the ndarray type is not supported.
-		 */
+	/**
+	 * Creates a {@link OnnxTensor} tensor of type double from an
+	 * {@link RandomAccessibleInterval} of type {@link DoubleType}
+	 * 
+	 * @param imgTensor 
+	 * 	The {@link RandomAccessibleInterval} to fill the tensor with.
+	 * @param env
+	 * 	{@link OrtEnvironment} needed to create {@link OnnxTensor}
+	 * @return The {@link OnnxTensor} tensor filled with the {@link RandomAccessibleInterval} data.
+	 * @throws IllegalArgumentException if the input {@link RandomAccessibleInterval} type is
+	 * not compatible
+	 */
     private static OnnxTensor buildDouble(RandomAccessibleInterval<DoubleType> imgTensor,  OrtEnvironment env) throws OrtException
     {
     	long[] tensorShape = imgTensor.dimensionsAsLongArray();
