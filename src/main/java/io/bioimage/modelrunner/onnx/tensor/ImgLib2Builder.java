@@ -36,8 +36,7 @@ package io.bioimage.modelrunner.onnx.tensor;
 
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
-import net.imglib2.img.ImgFactory;
-import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.Type;
 import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.integer.IntType;
@@ -142,7 +141,7 @@ public final class ImgLib2Builder
     private static Img<ByteType> buildFromTensorByte(byte[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ImgFactory< ByteType > factory = new CellImgFactory<>( new ByteType(), 5 );
+    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
         final Img< ByteType > outputImg = factory.create(tensorShape);
     	Cursor<ByteType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -164,7 +163,7 @@ public final class ImgLib2Builder
     private static Img<ByteType> buildFromTensorByte(byte[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
-    	final ImgFactory< ByteType > factory = new CellImgFactory<>( new ByteType(), 5 );
+    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
         final Img< ByteType > outputImg = factory.create(tensorShape);
     	Cursor<ByteType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -186,7 +185,7 @@ public final class ImgLib2Builder
     private static Img<ByteType> buildFromTensorByte(byte[][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, tensor[1].length};
-    	final ImgFactory< ByteType > factory = new CellImgFactory<>( new ByteType(), 5 );
+    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
         final Img< ByteType > outputImg = factory.create(tensorShape);
     	Cursor<ByteType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -208,7 +207,7 @@ public final class ImgLib2Builder
     private static Img<ByteType> buildFromTensorByte(byte[][][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, tensor[1].length, tensor[2].length};
-    	final ImgFactory< ByteType > factory = new CellImgFactory<>( new ByteType(), 5 );
+    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
         final Img< ByteType > outputImg = factory.create(tensorShape);
     	Cursor<ByteType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -231,7 +230,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length, tensor[2].length, tensor[3].length};
-    	final ImgFactory< ByteType > factory = new CellImgFactory<>( new ByteType(), 5 );
+    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
         final Img< ByteType > outputImg = factory.create(tensorShape);
     	Cursor<ByteType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -255,7 +254,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length, tensor[2].length, tensor[3].length};
-    	final ImgFactory< IntType > factory = new CellImgFactory<>( new IntType(), 5 );
+    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
         final Img< IntType > outputImg = factory.create(tensorShape);
     	Cursor<IntType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -279,7 +278,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length, tensor[2].length};
-    	final ImgFactory< IntType > factory = new CellImgFactory<>( new IntType(), 5 );
+    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
         final Img< IntType > outputImg = factory.create(tensorShape);
     	Cursor<IntType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -303,7 +302,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length};
-    	final ImgFactory< IntType > factory = new CellImgFactory<>( new IntType(), 5 );
+    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
         final Img< IntType > outputImg = factory.create(tensorShape);
     	Cursor<IntType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -325,7 +324,7 @@ public final class ImgLib2Builder
     private static Img<IntType> buildFromTensorInt(int[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
-    	final ImgFactory< IntType > factory = new CellImgFactory<>( new IntType(), 5 );
+    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
         final Img< IntType > outputImg = factory.create(tensorShape);
     	Cursor<IntType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -347,7 +346,7 @@ public final class ImgLib2Builder
     private static Img<IntType> buildFromTensorInt(int[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ImgFactory< IntType > factory = new CellImgFactory<>( new IntType(), 5 );
+    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
         final Img< IntType > outputImg = factory.create(tensorShape);
     	Cursor<IntType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -370,7 +369,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length, tensor[2].length, tensor[3].length};
-    	final ImgFactory< FloatType > factory = new CellImgFactory<>( new FloatType(), 5 );
+    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
         final Img< FloatType > outputImg = factory.create(tensorShape);
     	Cursor<FloatType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -394,7 +393,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length, tensor[2].length};
-    	final ImgFactory< FloatType > factory = new CellImgFactory<>( new FloatType(), 5 );
+    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
         final Img< FloatType > outputImg = factory.create(tensorShape);
     	Cursor<FloatType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -418,7 +417,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length};
-    	final ImgFactory< FloatType > factory = new CellImgFactory<>( new FloatType(), 5 );
+    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
         final Img< FloatType > outputImg = factory.create(tensorShape);
     	Cursor<FloatType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -441,7 +440,7 @@ public final class ImgLib2Builder
     private static Img<FloatType> buildFromTensorFloat(float[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
-    	final ImgFactory< FloatType > factory = new CellImgFactory<>( new FloatType(), 5 );
+    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
         final Img< FloatType > outputImg = factory.create(tensorShape);
     	Cursor<FloatType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -463,7 +462,7 @@ public final class ImgLib2Builder
     private static Img<FloatType> buildFromTensorFloat(float[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ImgFactory< FloatType > factory = new CellImgFactory<>( new FloatType(), 5 );
+    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
         final Img< FloatType > outputImg = factory.create(tensorShape);
     	Cursor<FloatType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -486,7 +485,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length, tensor[2].length, tensor[3].length};
-    	final ImgFactory< DoubleType > factory = new CellImgFactory<>( new DoubleType(), 5 );
+    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
         final Img< DoubleType > outputImg = factory.create(tensorShape);
     	Cursor<DoubleType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -510,7 +509,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length, tensor[2].length};
-    	final ImgFactory< DoubleType > factory = new CellImgFactory<>( new DoubleType(), 5 );
+    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
         final Img< DoubleType > outputImg = factory.create(tensorShape);
     	Cursor<DoubleType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -534,7 +533,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length};
-    	final ImgFactory< DoubleType > factory = new CellImgFactory<>( new DoubleType(), 5 );
+    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
         final Img< DoubleType > outputImg = factory.create(tensorShape);
     	Cursor<DoubleType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -557,7 +556,7 @@ public final class ImgLib2Builder
     private static Img<DoubleType> buildFromTensorDouble(double[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
-    	final ImgFactory< DoubleType > factory = new CellImgFactory<>( new DoubleType(), 5 );
+    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
         final Img< DoubleType > outputImg = factory.create(tensorShape);
     	Cursor<DoubleType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -579,7 +578,7 @@ public final class ImgLib2Builder
     private static Img<DoubleType> buildFromTensorDouble(double[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ImgFactory< DoubleType > factory = new CellImgFactory<>( new DoubleType(), 5 );
+    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
         final Img< DoubleType > outputImg = factory.create(tensorShape);
     	Cursor<DoubleType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -602,7 +601,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length, tensor[2].length, tensor[3].length};
-    	final ImgFactory< LongType > factory = new CellImgFactory<>( new LongType(), 5 );
+    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
         final Img< LongType > outputImg = factory.create(tensorShape);
     	Cursor<LongType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -626,7 +625,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length, tensor[2].length};
-    	final ImgFactory< LongType > factory = new CellImgFactory<>( new LongType(), 5 );
+    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
         final Img< LongType > outputImg = factory.create(tensorShape);
     	Cursor<LongType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -650,7 +649,7 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[1].length};
-    	final ImgFactory< LongType > factory = new CellImgFactory<>( new LongType(), 5 );
+    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
         final Img< LongType > outputImg = factory.create(tensorShape);
     	Cursor<LongType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -673,7 +672,7 @@ public final class ImgLib2Builder
     private static Img<LongType> buildFromTensorLong(long[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
-    	final ImgFactory< LongType > factory = new CellImgFactory<>( new LongType(), 5 );
+    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
         final Img< LongType > outputImg = factory.create(tensorShape);
     	Cursor<LongType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
@@ -695,7 +694,7 @@ public final class ImgLib2Builder
     private static Img<LongType> buildFromTensorLong(long[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ImgFactory< LongType > factory = new CellImgFactory<>( new LongType(), 5 );
+    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
         final Img< LongType > outputImg = factory.create(tensorShape);
     	Cursor<LongType> tensorCursor= outputImg.cursor();
 		while (tensorCursor.hasNext()) {
