@@ -11,7 +11,7 @@ To use with maven:
 <dependency>
   <groupId>io.bioimage</groupId>
   <artifactId>dl-modelrunner-onnx</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 
