@@ -28,8 +28,12 @@ import io.bioimage.modelrunner.onnx.tensor.TensorBuilder;
 import io.bioimage.modelrunner.tensor.Tensor;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import ai.onnxruntime.NodeInfo;
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
@@ -112,10 +116,12 @@ public class OnnxInterface implements DeepLearningEngineInterface
 	public void run(List<Tensor<?>> inputTensors, List<Tensor<?>> outputTensors) throws RunModelException {
 		Result output;
 		HashMap<String, OnnxTensor> inputMap = new HashMap<String, OnnxTensor>();
+		Iterator<String> inputNames = session.getInputNames().iterator();
+		Iterator<String> outputNames = session.getOutputNames().iterator();
 		try {
 	        for (Tensor tt : inputTensors) {
 	        	OnnxTensor inT = TensorBuilder.build(tt, env);
-	        	inputMap.put(tt.getName(), inT);
+	        	inputMap.put(inputNames.next(), inT);
 	        }
 	        output = session.run(inputMap);
 		} catch (OrtException ex) {
@@ -154,9 +160,10 @@ public class OnnxInterface implements DeepLearningEngineInterface
 	public static void fillOutputTensors(Result onnxTensors, List<Tensor<?>> outputTensors) throws RunModelException{
 		if (onnxTensors.size() != outputTensors.size())
 			throw new RunModelException(onnxTensors.size(), outputTensors.size());
+		int cc = 0;
 		for (Tensor tt : outputTensors) {
 			try {
-				tt.setData(ImgLib2Builder.build(onnxTensors.get(tt.getName()).get().getValue()));
+				tt.setData(ImgLib2Builder.build(onnxTensors.get(cc ++).getValue()));
 			} catch (IllegalArgumentException | OrtException e) {
 				e.printStackTrace();
 				throw new RunModelException("Unable to recover value of output tensor: " + tt.getName()
