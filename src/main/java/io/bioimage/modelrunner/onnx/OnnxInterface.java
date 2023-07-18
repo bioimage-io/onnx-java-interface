@@ -29,6 +29,7 @@ import io.bioimage.modelrunner.tensor.Tensor;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -115,7 +116,7 @@ public class OnnxInterface implements DeepLearningEngineInterface
 	@Override
 	public void run(List<Tensor<?>> inputTensors, List<Tensor<?>> outputTensors) throws RunModelException {
 		Result output;
-		HashMap<String, OnnxTensor> inputMap = new HashMap<String, OnnxTensor>();
+		LinkedHashMap<String, OnnxTensor> inputMap = new LinkedHashMap<String, OnnxTensor>();
 		Iterator<String> inputNames = session.getInputNames().iterator();
 		Iterator<String> outputNames = session.getOutputNames().iterator();
 		try {
