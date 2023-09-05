@@ -27,14 +27,10 @@ import io.bioimage.modelrunner.onnx.tensor.ImgLib2Builder;
 import io.bioimage.modelrunner.onnx.tensor.TensorBuilder;
 import io.bioimage.modelrunner.tensor.Tensor;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import ai.onnxruntime.NodeInfo;
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
