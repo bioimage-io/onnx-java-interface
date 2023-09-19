@@ -92,7 +92,7 @@
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
 
-		<dl-modelrunner.version>0.3.11</dl-modelrunner.version>
+		<dl-modelrunner.version>0.4.0</dl-modelrunner.version>
 		<onnxruntime.version>1.12.1</onnxruntime.version>
 	</properties>
 
