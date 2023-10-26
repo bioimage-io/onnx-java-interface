@@ -21,6 +21,7 @@
 package io.bioimage.modelrunner.onnx.tensor;
 
 import io.bioimage.modelrunner.tensor.Tensor;
+import io.bioimage.modelrunner.tensor.Utils;
 import io.bioimage.modelrunner.utils.IndexingUtils;
 
 import java.nio.ByteBuffer;
@@ -30,6 +31,7 @@ import java.nio.IntBuffer;
 
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.blocks.PrimitiveBlocks;
 import net.imglib2.img.Img;
 import net.imglib2.type.Type;
 import net.imglib2.type.numeric.integer.ByteType;
@@ -142,8 +144,8 @@ public final class TensorBuilder
         	flatArr[flatPos] = val;
 		}
     	ByteBuffer buff = ByteBuffer.wrap(flatArr);
-    	OnnxTensor tensor = OnnxTensor.createTensor(env, buff, tensorShape);
-	 	return tensor;
+    	OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
+	 	return ndarray;
     }
 
 	/**
@@ -180,8 +182,8 @@ public final class TensorBuilder
         	flatArr[flatPos] = val;
 		}
 		IntBuffer buff = IntBuffer.wrap(flatArr);
-    	OnnxTensor tensor = OnnxTensor.createTensor(env, buff, tensorShape);
-	 	return tensor;
+    	OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
+	 	return ndarray;
     }
 
 	/**
@@ -218,15 +220,15 @@ public final class TensorBuilder
         	flatArr[flatPos] = val;
 		}
 		FloatBuffer buff = FloatBuffer.wrap(flatArr);
-		OnnxTensor tensor = OnnxTensor.createTensor(env, buff, tensorShape);
-	 	return tensor;
+		OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
+	 	return ndarray;
     }
 
 	/**
 	 * Creates a {@link OnnxTensor} tensor of type double from an
 	 * {@link RandomAccessibleInterval} of type {@link DoubleType}
 	 * 
-	 * @param imgTensor 
+	 * @param tensor 
 	 * 	The {@link RandomAccessibleInterval} to fill the tensor with.
 	 * @param env
 	 * 	{@link OrtEnvironment} needed to create {@link OnnxTensor}
@@ -234,29 +236,20 @@ public final class TensorBuilder
 	 * @throws IllegalArgumentException if the input {@link RandomAccessibleInterval} type is
 	 * not compatible
 	 */
-    private static OnnxTensor buildDouble(RandomAccessibleInterval<DoubleType> imgTensor,  OrtEnvironment env) throws OrtException
+    private static OnnxTensor buildDouble(RandomAccessibleInterval<DoubleType> tensor,  OrtEnvironment env) throws OrtException
     {
-    	long[] tensorShape = imgTensor.dimensionsAsLongArray();
-    	Cursor<DoubleType> tensorCursor;
-		if (imgTensor instanceof IntervalView)
-			tensorCursor = ((IntervalView<DoubleType>) imgTensor).cursor();
-		else if (imgTensor instanceof Img)
-			tensorCursor = ((Img<DoubleType>) imgTensor).cursor();
-		else
-			throw new IllegalArgumentException("The data of the " + Tensor.class + " has "
-					+ "to be an instance of " + Img.class + " or " + IntervalView.class);
-		long flatSize = 1;
-		for (long dd : imgTensor.dimensionsAsLongArray()) { flatSize *= dd;}
-		double[] flatArr = new double[(int) flatSize];
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	int flatPos = IndexingUtils.multidimensionalIntoFlatIndex(cursorPos, tensorShape);
-        	double val = tensorCursor.get().getRealFloat();
-        	flatArr[flatPos] = val;
-		}
+		tensor = Utils.transpose(tensor);
+		PrimitiveBlocks< DoubleType > blocks = PrimitiveBlocks.of( tensor );
+		long[] tensorShape = tensor.dimensionsAsLongArray();
+		int size = 1;
+		for (long ll : tensorShape) size *= ll;
+		final double[] flatArr = new double[size];
+		int[] sArr = new int[tensorShape.length];
+		for (int i = 0; i < sArr.length; i ++)
+			sArr[i] = (int) tensorShape[i];
+		blocks.copy( new long[tensorShape.length], flatArr, sArr );
 		DoubleBuffer buff = DoubleBuffer.wrap(flatArr);
-    	OnnxTensor tensor = OnnxTensor.createTensor(env, buff, tensorShape);
-	 	return tensor;
+    	OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
+	 	return ndarray;
     }
 }
