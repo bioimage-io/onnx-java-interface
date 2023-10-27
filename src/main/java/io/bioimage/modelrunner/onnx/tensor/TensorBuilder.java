@@ -130,7 +130,7 @@ public final class TensorBuilder
 		int[] sArr = new int[tensorShape.length];
 		for (int i = 0; i < sArr.length; i ++)
 			sArr[i] = (int) tensorShape[i];
-		blocks.copy( new long[tensorShape.length], flatArr, sArr );
+		blocks.copy( tensor.minAsLongArray(), flatArr, sArr );
     	ByteBuffer buff = ByteBuffer.wrap(flatArr);
     	OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
 	 	return ndarray;
@@ -159,7 +159,7 @@ public final class TensorBuilder
 		int[] sArr = new int[tensorShape.length];
 		for (int i = 0; i < sArr.length; i ++)
 			sArr[i] = (int) tensorShape[i];
-		blocks.copy( new long[tensorShape.length], flatArr, sArr );
+		blocks.copy( tensor.minAsLongArray(), flatArr, sArr );
 		IntBuffer buff = IntBuffer.wrap(flatArr);
     	OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
 	 	return ndarray;
@@ -188,7 +188,7 @@ public final class TensorBuilder
 		int[] sArr = new int[tensorShape.length];
 		for (int i = 0; i < sArr.length; i ++)
 			sArr[i] = (int) tensorShape[i];
-		blocks.copy( new long[tensorShape.length], flatArr, sArr );
+		blocks.copy( tensor.minAsLongArray(), flatArr, sArr );
 		FloatBuffer buff = FloatBuffer.wrap(flatArr);
 		OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
 	 	return ndarray;
@@ -217,7 +217,7 @@ public final class TensorBuilder
 		int[] sArr = new int[tensorShape.length];
 		for (int i = 0; i < sArr.length; i ++)
 			sArr[i] = (int) tensorShape[i];
-		blocks.copy( new long[tensorShape.length], flatArr, sArr );
+		blocks.copy( tensor.minAsLongArray(), flatArr, sArr );
 		DoubleBuffer buff = DoubleBuffer.wrap(flatArr);
     	OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
 	 	return ndarray;
