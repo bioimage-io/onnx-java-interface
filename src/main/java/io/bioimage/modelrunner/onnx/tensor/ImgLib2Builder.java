@@ -21,17 +21,12 @@
 package io.bioimage.modelrunner.onnx.tensor;
 
 
-import io.bioimage.modelrunner.tensor.Utils;
-import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.img.Img;
-import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.type.Type;
 import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.integer.LongType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
 
@@ -132,16 +127,15 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<ByteType> buildFromTensorByte(byte[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
-        final Img< ByteType > outputImg = factory.create(tensorShape);
-    	Cursor<ByteType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	byte val = tensor[(int) cursorPos[0]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		byte[] flatArr = new byte[totalSize];
+		int cc = 0;
+		for (int i = 0; i < tensor.length; i ++) {
+			flatArr[cc ++] = tensor[i];
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<ByteType> rai = ArrayImgs.bytes(flatArr, tensorShape);
+		return rai;
 	}
 
     /**
@@ -153,28 +147,18 @@ public final class ImgLib2Builder
 	 */
     private static RandomAccessibleInterval<ByteType> buildFromTensorByte(byte[][] tensor)
     {
-    	long[] arrayShape = new long[] {tensor.length, tensor[0].length};
-		long[] tensorShape = new long[arrayShape.length];
-		for (int i = 0; i < arrayShape.length; i ++) tensorShape[i] = arrayShape[arrayShape.length - 1 - i];
+    	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
 		int totalSize = 1;
 		for (long i : tensorShape) totalSize *= i;
 		byte[] flatArr = new byte[totalSize];
-    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
-        final Img< ByteType > outputImg = factory.create(tensorShape);
-    	Cursor<ByteType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	byte val = tensor[(int) cursorPos[0]][(int) cursorPos[1]];
-        	tensorCursor.get().set(val);
+		int cc = 0;
+		for (int j = 0; j < tensor[0].length; j ++) {
+			for (int i = 0; i < tensor.length; i ++) {
+				flatArr[cc ++] = tensor[i][j];
+			}
 		}
-	 	return outputImg;
-
-		long[] tensorShape = new long[arrayShape.length];
-		for (int i = 0; i < arrayShape.length; i ++) tensorShape[i] = arrayShape[arrayShape.length - 1 - i];
-		byte[] flatArr = tensor.toByteArray();
-		RandomAccessibleInterval<UnsignedByteType> rai = ArrayImgs.unsignedBytes(flatArr, tensorShape);
-		return Utils.transpose(rai);
+		RandomAccessibleInterval<ByteType> rai = ArrayImgs.bytes(flatArr, tensorShape);
+		return rai;
 	}
 
     /**
@@ -187,16 +171,19 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<ByteType> buildFromTensorByte(byte[][][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, tensor[0][0].length};
-    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
-        final Img< ByteType > outputImg = factory.create(tensorShape);
-    	Cursor<ByteType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	byte val = tensor[(int) cursorPos[0]][(int) cursorPos[1]][(int) cursorPos[2]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		byte[] flatArr = new byte[totalSize];
+		int cc = 0;
+		for (int k = 0; k < tensor[0][0].length; k ++) {
+			for (int j = 0; j < tensor[0].length; j ++) {
+				for (int i = 0; i < tensor.length; i ++) {
+					flatArr[cc ++] = tensor[i][j][k];
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<ByteType> rai = ArrayImgs.bytes(flatArr, tensorShape);
+		return rai;
 	}
 
     /**
@@ -210,16 +197,21 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length};
-    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
-        final Img< ByteType > outputImg = factory.create(tensorShape);
-    	Cursor<ByteType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	byte val = tensor[(int) cursorPos[0]][(int) cursorPos[1]][(int) cursorPos[2]][(int) cursorPos[3]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		byte[] flatArr = new byte[totalSize];
+		int cc = 0;
+		for (int l = 0; l < tensor[0][0][0].length; l ++) {
+			for (int k = 0; k < tensor[0][0].length; k ++) {
+				for (int j = 0; j < tensor[0].length; j ++) {
+					for (int i = 0; i < tensor.length; i ++) {
+						flatArr[cc ++] = tensor[i][j][k][l];
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<ByteType> rai = ArrayImgs.bytes(flatArr, tensorShape);
+		return rai;
 	}
 
     /**
@@ -233,17 +225,23 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length, tensor[0][0][0][0].length};
-    	final ArrayImgFactory< ByteType > factory = new ArrayImgFactory<>( new ByteType() );
-        final Img< ByteType > outputImg = factory.create(tensorShape);
-    	Cursor<ByteType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	byte val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]][(int) cursorPos[3]][(int) cursorPos[4]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		byte[] flatArr = new byte[totalSize];
+		int cc = 0;
+		for (int m = 0; m < tensor[0][0][0][0].length; m ++) {
+			for (int l = 0; l < tensor[0][0][0].length; l ++) {
+				for (int k = 0; k < tensor[0][0].length; k ++) {
+					for (int j = 0; j < tensor[0].length; j ++) {
+						for (int i = 0; i < tensor.length; i ++) {
+							flatArr[cc ++] = tensor[i][j][k][l][m];
+						}
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<ByteType> rai = ArrayImgs.bytes(flatArr, tensorShape);
+		return rai;
 	}
 
     /**
@@ -257,17 +255,23 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length, tensor[0][0][0][0].length};
-    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
-        final Img< IntType > outputImg = factory.create(tensorShape);
-    	Cursor<IntType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	int val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]][(int) cursorPos[3]][(int) cursorPos[4]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		int[] flatArr = new int[totalSize];
+		int cc = 0;
+		for (int m = 0; m < tensor[0][0][0][0].length; m ++) {
+			for (int l = 0; l < tensor[0][0][0].length; l ++) {
+				for (int k = 0; k < tensor[0][0].length; k ++) {
+					for (int j = 0; j < tensor[0].length; j ++) {
+						for (int i = 0; i < tensor.length; i ++) {
+							flatArr[cc ++] = tensor[i][j][k][l][m];
+						}
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<IntType> rai = ArrayImgs.ints(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -281,17 +285,21 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length};
-    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
-        final Img< IntType > outputImg = factory.create(tensorShape);
-    	Cursor<IntType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	int val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]][(int) cursorPos[3]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		int[] flatArr = new int[totalSize];
+		int cc = 0;
+		for (int l = 0; l < tensor[0][0][0].length; l ++) {
+			for (int k = 0; k < tensor[0][0].length; k ++) {
+				for (int j = 0; j < tensor[0].length; j ++) {
+					for (int i = 0; i < tensor.length; i ++) {
+						flatArr[cc ++] = tensor[i][j][k][l];
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<IntType> rai = ArrayImgs.ints(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -305,16 +313,19 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length};
-    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
-        final Img< IntType > outputImg = factory.create(tensorShape);
-    	Cursor<IntType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	int val = tensor[(int) cursorPos[0]][(int) cursorPos[1]][(int) cursorPos[2]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		int[] flatArr = new int[totalSize];
+		int cc = 0;
+		for (int k = 0; k < tensor[0][0].length; k ++) {
+			for (int j = 0; j < tensor[0].length; j ++) {
+				for (int i = 0; i < tensor.length; i ++) {
+					flatArr[cc ++] = tensor[i][j][k];
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<IntType> rai = ArrayImgs.ints(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -327,16 +338,17 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<IntType> buildFromTensorInt(int[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
-    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
-        final Img< IntType > outputImg = factory.create(tensorShape);
-    	Cursor<IntType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	int val = tensor[(int) cursorPos[0]][(int) cursorPos[1]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		int[] flatArr = new int[totalSize];
+		int cc = 0;
+		for (int j = 0; j < tensor[0].length; j ++) {
+			for (int i = 0; i < tensor.length; i ++) {
+				flatArr[cc ++] = tensor[i][j];
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<IntType> rai = ArrayImgs.ints(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -349,16 +361,8 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<IntType> buildFromTensorInt(int[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ArrayImgFactory< IntType > factory = new ArrayImgFactory<>( new IntType() );
-        final Img< IntType > outputImg = factory.create(tensorShape);
-    	Cursor<IntType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	int val = tensor[(int) cursorPos[0]];
-        	tensorCursor.get().set(val);
-		}
-	 	return outputImg;
+		RandomAccessibleInterval<IntType> rai = ArrayImgs.ints(tensor, tensorShape);
+		return rai;
     }
 
     /**
@@ -372,17 +376,23 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length, tensor[0][0][0][0].length};
-    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
-        final Img< FloatType > outputImg = factory.create(tensorShape);
-    	Cursor<FloatType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	float val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]][(int) cursorPos[3]][(int) cursorPos[4]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		float[] flatArr = new float[totalSize];
+		int cc = 0;
+		for (int m = 0; m < tensor[0][0][0][0].length; m ++) {
+			for (int l = 0; l < tensor[0][0][0].length; l ++) {
+				for (int k = 0; k < tensor[0][0].length; k ++) {
+					for (int j = 0; j < tensor[0].length; j ++) {
+						for (int i = 0; i < tensor.length; i ++) {
+							flatArr[cc ++] = tensor[i][j][k][l][m];
+						}
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<FloatType> rai = ArrayImgs.floats(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -396,17 +406,21 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length};
-    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
-        final Img< FloatType > outputImg = factory.create(tensorShape);
-    	Cursor<FloatType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	float val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]][(int) cursorPos[3]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		float[] flatArr = new float[totalSize];
+		int cc = 0;
+		for (int l = 0; l < tensor[0][0][0].length; l ++) {
+			for (int k = 0; k < tensor[0][0].length; k ++) {
+				for (int j = 0; j < tensor[0].length; j ++) {
+					for (int i = 0; i < tensor.length; i ++) {
+						flatArr[cc ++] = tensor[i][j][k][l];
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<FloatType> rai = ArrayImgs.floats(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -420,17 +434,19 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length};
-    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
-        final Img< FloatType > outputImg = factory.create(tensorShape);
-    	Cursor<FloatType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	float val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		float[] flatArr = new float[totalSize];
+		int cc = 0;
+		for (int k = 0; k < tensor[0][0].length; k ++) {
+			for (int j = 0; j < tensor[0].length; j ++) {
+				for (int i = 0; i < tensor.length; i ++) {
+					flatArr[cc ++] = tensor[i][j][k];
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<FloatType> rai = ArrayImgs.floats(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -443,16 +459,17 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<FloatType> buildFromTensorFloat(float[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
-    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
-        final Img< FloatType > outputImg = factory.create(tensorShape);
-    	Cursor<FloatType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	float val = tensor[(int) cursorPos[0]][(int) cursorPos[1]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		float[] flatArr = new float[totalSize];
+		int cc = 0;
+		for (int j = 0; j < tensor[0].length; j ++) {
+			for (int i = 0; i < tensor.length; i ++) {
+				flatArr[cc ++] = tensor[i][j];
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<FloatType> rai = ArrayImgs.floats(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -465,16 +482,8 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<FloatType> buildFromTensorFloat(float[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ArrayImgFactory< FloatType > factory = new ArrayImgFactory<>( new FloatType() );
-        final Img< FloatType > outputImg = factory.create(tensorShape);
-    	Cursor<FloatType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	float val = tensor[(int) cursorPos[0]];
-        	tensorCursor.get().set(val);
-		}
-	 	return outputImg;
+		RandomAccessibleInterval<FloatType> rai = ArrayImgs.floats(tensor, tensorShape);
+		return rai;
     }
 
     /**
@@ -488,17 +497,23 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length, tensor[0][0][0][0].length};
-    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
-        final Img< DoubleType > outputImg = factory.create(tensorShape);
-    	Cursor<DoubleType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	double val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]][(int) cursorPos[3]][(int) cursorPos[4]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		double[] flatArr = new double[totalSize];
+		int cc = 0;
+		for (int m = 0; m < tensor[0][0][0][0].length; m ++) {
+			for (int l = 0; l < tensor[0][0][0].length; l ++) {
+				for (int k = 0; k < tensor[0][0].length; k ++) {
+					for (int j = 0; j < tensor[0].length; j ++) {
+						for (int i = 0; i < tensor.length; i ++) {
+							flatArr[cc ++] = tensor[i][j][k][l][m];
+						}
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<DoubleType> rai = ArrayImgs.doubles(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -512,17 +527,21 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length};
-    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
-        final Img< DoubleType > outputImg = factory.create(tensorShape);
-    	Cursor<DoubleType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	double val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]][(int) cursorPos[3]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		double[] flatArr = new double[totalSize];
+		int cc = 0;
+		for (int l = 0; l < tensor[0][0][0].length; l ++) {
+			for (int k = 0; k < tensor[0][0].length; k ++) {
+				for (int j = 0; j < tensor[0].length; j ++) {
+					for (int i = 0; i < tensor.length; i ++) {
+						flatArr[cc ++] = tensor[i][j][k][l];
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<DoubleType> rai = ArrayImgs.doubles(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -536,17 +555,19 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length};
-    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
-        final Img< DoubleType > outputImg = factory.create(tensorShape);
-    	Cursor<DoubleType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	double val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		double[] flatArr = new double[totalSize];
+		int cc = 0;
+		for (int k = 0; k < tensor[0][0].length; k ++) {
+			for (int j = 0; j < tensor[0].length; j ++) {
+				for (int i = 0; i < tensor.length; i ++) {
+					flatArr[cc ++] = tensor[i][j][k];
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<DoubleType> rai = ArrayImgs.doubles(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -559,16 +580,17 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<DoubleType> buildFromTensorDouble(double[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
-    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
-        final Img< DoubleType > outputImg = factory.create(tensorShape);
-    	Cursor<DoubleType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	double val = tensor[(int) cursorPos[0]][(int) cursorPos[1]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		double[] flatArr = new double[totalSize];
+		int cc = 0;
+		for (int j = 0; j < tensor[0].length; j ++) {
+			for (int i = 0; i < tensor.length; i ++) {
+				flatArr[cc ++] = tensor[i][j];
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<DoubleType> rai = ArrayImgs.doubles(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -581,16 +603,15 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<DoubleType> buildFromTensorDouble(double[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ArrayImgFactory< DoubleType > factory = new ArrayImgFactory<>( new DoubleType() );
-        final Img< DoubleType > outputImg = factory.create(tensorShape);
-    	Cursor<DoubleType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-        	double val = tensor[(int) cursorPos[0]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		double[] flatArr = new double[totalSize];
+		int cc = 0;
+		for (int i = 0; i < tensor.length; i ++) {
+			flatArr[cc ++] = tensor[i];
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<DoubleType> rai = ArrayImgs.doubles(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -604,17 +625,23 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length, tensor[0][0][0][0].length};
-    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
-        final Img< LongType > outputImg = factory.create(tensorShape);
-    	Cursor<LongType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-			long val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]][(int) cursorPos[3]][(int) cursorPos[4]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		long[] flatArr = new long[totalSize];
+		int cc = 0;
+		for (int m = 0; m < tensor[0][0][0][0].length; m ++) {
+			for (int l = 0; l < tensor[0][0][0].length; l ++) {
+				for (int k = 0; k < tensor[0][0].length; k ++) {
+					for (int j = 0; j < tensor[0].length; j ++) {
+						for (int i = 0; i < tensor.length; i ++) {
+							flatArr[cc ++] = tensor[i][j][k][l][m];
+						}
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<LongType> rai = ArrayImgs.longs(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -628,17 +655,21 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length, tensor[0][0][0].length};
-    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
-        final Img< LongType > outputImg = factory.create(tensorShape);
-    	Cursor<LongType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-			long val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]][(int) cursorPos[3]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		long[] flatArr = new long[totalSize];
+		int cc = 0;
+		for (int l = 0; l < tensor[0][0][0].length; l ++) {
+			for (int k = 0; k < tensor[0][0].length; k ++) {
+				for (int j = 0; j < tensor[0].length; j ++) {
+					for (int i = 0; i < tensor.length; i ++) {
+						flatArr[cc ++] = tensor[i][j][k][l];
+					}
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<LongType> rai = ArrayImgs.longs(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -652,17 +683,19 @@ public final class ImgLib2Builder
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length, 
     			tensor[0][0].length};
-    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
-        final Img< LongType > outputImg = factory.create(tensorShape);
-    	Cursor<LongType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-			long val = tensor[(int) cursorPos[0]][(int) cursorPos[1]]
-        			[(int) cursorPos[2]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		long[] flatArr = new long[totalSize];
+		int cc = 0;
+		for (int k = 0; k < tensor[0][0].length; k ++) {
+			for (int j = 0; j < tensor[0].length; j ++) {
+				for (int i = 0; i < tensor.length; i ++) {
+					flatArr[cc ++] = tensor[i][j][k];
+				}
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<LongType> rai = ArrayImgs.longs(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -675,16 +708,17 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<LongType> buildFromTensorLong(long[][] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length, tensor[0].length};
-    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
-        final Img< LongType > outputImg = factory.create(tensorShape);
-    	Cursor<LongType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-			long val = tensor[(int) cursorPos[0]][(int) cursorPos[1]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		long[] flatArr = new long[totalSize];
+		int cc = 0;
+		for (int j = 0; j < tensor[0].length; j ++) {
+			for (int i = 0; i < tensor.length; i ++) {
+				flatArr[cc ++] = tensor[i][j];
+			}
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<LongType> rai = ArrayImgs.longs(flatArr, tensorShape);
+		return rai;
     }
 
     /**
@@ -697,15 +731,14 @@ public final class ImgLib2Builder
     private static RandomAccessibleInterval<LongType> buildFromTensorLong(long[] tensor)
     {
     	long[] tensorShape = new long[] {tensor.length};
-    	final ArrayImgFactory< LongType > factory = new ArrayImgFactory<>( new LongType() );
-        final Img< LongType > outputImg = factory.create(tensorShape);
-    	Cursor<LongType> tensorCursor= outputImg.cursor();
-		while (tensorCursor.hasNext()) {
-			tensorCursor.fwd();
-			long[] cursorPos = tensorCursor.positionAsLongArray();
-			long val = tensor[(int) cursorPos[0]];
-        	tensorCursor.get().set(val);
+		int totalSize = 1;
+		for (long i : tensorShape) totalSize *= i;
+		long[] flatArr = new long[totalSize];
+		int cc = 0;
+		for (int i = 0; i < tensor.length; i ++) {
+			flatArr[cc ++] = tensor[i];
 		}
-	 	return outputImg;
+		RandomAccessibleInterval<LongType> rai = ArrayImgs.longs(flatArr, tensorShape);
+		return rai;
     }
 }
