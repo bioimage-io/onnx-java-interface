@@ -111,10 +111,6 @@
 			<version>${dl-modelrunner.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.microsoft.onnxruntime</groupId>
 			<artifactId>onnxruntime</artifactId>
 			<version>${onnxruntime.version}</version>
