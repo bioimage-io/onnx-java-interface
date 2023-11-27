@@ -22,6 +22,7 @@ package io.bioimage.modelrunner.onnx.tensor;
 
 import io.bioimage.modelrunner.tensor.Tensor;
 import io.bioimage.modelrunner.tensor.Utils;
+import io.bioimage.modelrunner.utils.CommonUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -124,6 +125,8 @@ public final class TensorBuilder
 		tensor = Utils.transpose(tensor);
 		PrimitiveBlocks< ByteType > blocks = PrimitiveBlocks.of( tensor );
 		long[] tensorShape = tensor.dimensionsAsLongArray();
+		if (CommonUtils.int32Overflows(tensorShape))
+			throw new IllegalArgumentException("Tensor is too big to handle. Max number of elements allowed in a tensor: " + Integer.MAX_VALUE);
 		int size = 1;
 		for (long ll : tensorShape) size *= ll;
 		final byte[] flatArr = new byte[size];
@@ -153,6 +156,8 @@ public final class TensorBuilder
 		tensor = Utils.transpose(tensor);
 		PrimitiveBlocks< IntType > blocks = PrimitiveBlocks.of( tensor );
 		long[] tensorShape = tensor.dimensionsAsLongArray();
+		if (CommonUtils.int32Overflows(tensorShape))
+			throw new IllegalArgumentException("Tensor is too big to handle. Max number of elements allowed in a tensor: " + Integer.MAX_VALUE);
 		int size = 1;
 		for (long ll : tensorShape) size *= ll;
 		final int[] flatArr = new int[size];
@@ -182,6 +187,8 @@ public final class TensorBuilder
 		tensor = Utils.transpose(tensor);
 		PrimitiveBlocks< FloatType > blocks = PrimitiveBlocks.of( tensor );
 		long[] tensorShape = tensor.dimensionsAsLongArray();
+		if (CommonUtils.int32Overflows(tensorShape))
+			throw new IllegalArgumentException("Tensor is too big to handle. Max number of elements allowed in a tensor: " + Integer.MAX_VALUE);
 		int size = 1;
 		for (long ll : tensorShape) size *= ll;
 		final float[] flatArr = new float[size];
@@ -211,6 +218,8 @@ public final class TensorBuilder
 		tensor = Utils.transpose(tensor);
 		PrimitiveBlocks< DoubleType > blocks = PrimitiveBlocks.of( tensor );
 		long[] tensorShape = tensor.dimensionsAsLongArray();
+		if (CommonUtils.int32Overflows(tensorShape))
+			throw new IllegalArgumentException("Tensor is too big to handle. Max number of elements allowed in a tensor: " + Integer.MAX_VALUE);
 		int size = 1;
 		for (long ll : tensorShape) size *= ll;
 		final double[] flatArr = new double[size];
