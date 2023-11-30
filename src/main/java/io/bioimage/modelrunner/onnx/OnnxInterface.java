@@ -26,7 +26,12 @@ import io.bioimage.modelrunner.exceptions.RunModelException;
 import io.bioimage.modelrunner.onnx.tensor.ImgLib2Builder;
 import io.bioimage.modelrunner.onnx.tensor.TensorBuilder;
 import io.bioimage.modelrunner.tensor.Tensor;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.img.array.ArrayImgs;
+import net.imglib2.type.numeric.real.FloatType;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -79,6 +84,26 @@ public class OnnxInterface implements DeepLearningEngineInterface
     public OnnxInterface()
     {
     }
+    
+    public static void main(String args[]) throws LoadModelException, RunModelException {
+    	String folderName = "/home/carlos/git/deep-icy/models/NucleiSegmentationBoundaryModel_27112023_190556";
+    	String source = folderName + File.separator + "weights.onnx";
+    	
+    	OnnxInterface oi = new OnnxInterface();
+    	oi.loadModel(folderName, source);
+    	
+    	RandomAccessibleInterval<FloatType> img = ArrayImgs.floats(new long[] {1, 3, 20000, 20000});
+    	Tensor<FloatType> tt = Tensor.build("input0", "bcyx", img);
+    	List<Tensor<?>> inps = new ArrayList<Tensor<?>>();
+    	inps.add(tt);
+
+    	Tensor<FloatType> oo = Tensor.buildEmptyTensor("output0", "bcyx");
+    	List<Tensor<?>> outs = new ArrayList<Tensor<?>>();
+    	outs.add(oo);
+    	
+    	oi.run(inps, outs);
+    	System.out.println(false);
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -94,10 +119,10 @@ public class OnnxInterface implements DeepLearningEngineInterface
 			session = env.createSession(modelSource, opts);
 		} catch (OrtException e) {
 			closeModel();
-			throw new LoadModelException("Error loading Onnx model", e.getCause().toString());
+			throw new LoadModelException("Error loading Onnx model", e.toString());
 		} catch (Exception e) {
 			closeModel();
-			throw new LoadModelException("Error loading Onnx model", e.getCause().toString());
+			throw new LoadModelException("Error loading Onnx model", e.toString());
 		}
 		
 	}
