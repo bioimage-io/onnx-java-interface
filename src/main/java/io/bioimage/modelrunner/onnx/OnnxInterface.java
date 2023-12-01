@@ -92,7 +92,7 @@ public class OnnxInterface implements DeepLearningEngineInterface
     	OnnxInterface oi = new OnnxInterface();
     	oi.loadModel(folderName, source);
     	
-    	RandomAccessibleInterval<FloatType> img = ArrayImgs.floats(new long[] {1, 3, 20000, 20000});
+    	RandomAccessibleInterval<FloatType> img = ArrayImgs.floats(new long[] {1, 1, 256, 256});
     	Tensor<FloatType> tt = Tensor.build("input0", "bcyx", img);
     	List<Tensor<?>> inps = new ArrayList<Tensor<?>>();
     	inps.add(tt);
