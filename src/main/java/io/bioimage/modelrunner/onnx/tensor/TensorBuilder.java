@@ -28,7 +28,9 @@ import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 
+import net.imglib2.Cursor;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.blocks.PrimitiveBlocks;
 import net.imglib2.img.Img;
@@ -38,7 +40,7 @@ import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
-
+import net.imglib2.view.Views;
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
@@ -122,18 +124,25 @@ public final class TensorBuilder
 	 */
     private static OnnxTensor buildByte(RandomAccessibleInterval<ByteType> tensor, OrtEnvironment env) throws OrtException
     {
+		long[] ogShape = tensor.dimensionsAsLongArray();
+		if (CommonUtils.int32Overflows(ogShape))
+			throw new IllegalArgumentException("Provided tensor with shape " + Arrays.toString(ogShape) 
+								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE);
 		tensor = Utils.transpose(tensor);
-		PrimitiveBlocks< ByteType > blocks = PrimitiveBlocks.of( tensor );
 		long[] tensorShape = tensor.dimensionsAsLongArray();
-		if (CommonUtils.int32Overflows(tensorShape))
-			throw new IllegalArgumentException("Tensor is too big to handle. Max number of elements allowed in a tensor: " + Integer.MAX_VALUE);
 		int size = 1;
 		for (long ll : tensorShape) size *= ll;
 		final byte[] flatArr = new byte[size];
 		int[] sArr = new int[tensorShape.length];
 		for (int i = 0; i < sArr.length; i ++)
 			sArr[i] = (int) tensorShape[i];
-		blocks.copy( tensor.minAsLongArray(), flatArr, sArr );
+
+		Cursor<ByteType> cursor = Views.flatIterable(tensor).cursor();
+		int i = 0;
+		while (cursor.hasNext()) {
+			cursor.fwd();
+			flatArr[i ++] = cursor.get().getByte();
+		}
     	ByteBuffer buff = ByteBuffer.wrap(flatArr);
     	OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
 	 	return ndarray;
@@ -153,18 +162,25 @@ public final class TensorBuilder
 	 */
     private static OnnxTensor buildInt(RandomAccessibleInterval<IntType> tensor, OrtEnvironment env) throws OrtException
     {
+		long[] ogShape = tensor.dimensionsAsLongArray();
+		if (CommonUtils.int32Overflows(ogShape))
+			throw new IllegalArgumentException("Provided tensor with shape " + Arrays.toString(ogShape) 
+								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE);
 		tensor = Utils.transpose(tensor);
-		PrimitiveBlocks< IntType > blocks = PrimitiveBlocks.of( tensor );
 		long[] tensorShape = tensor.dimensionsAsLongArray();
-		if (CommonUtils.int32Overflows(tensorShape))
-			throw new IllegalArgumentException("Tensor is too big to handle. Max number of elements allowed in a tensor: " + Integer.MAX_VALUE);
 		int size = 1;
 		for (long ll : tensorShape) size *= ll;
 		final int[] flatArr = new int[size];
 		int[] sArr = new int[tensorShape.length];
 		for (int i = 0; i < sArr.length; i ++)
 			sArr[i] = (int) tensorShape[i];
-		blocks.copy( tensor.minAsLongArray(), flatArr, sArr );
+
+		Cursor<IntType> cursor = Views.flatIterable(tensor).cursor();
+		int i = 0;
+		while (cursor.hasNext()) {
+			cursor.fwd();
+			flatArr[i ++] = cursor.get().get();
+		}
 		IntBuffer buff = IntBuffer.wrap(flatArr);
     	OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
 	 	return ndarray;
@@ -184,20 +200,27 @@ public final class TensorBuilder
 	 */
     private static OnnxTensor buildFloat(RandomAccessibleInterval<FloatType> tensor, OrtEnvironment env) throws OrtException
     {
+		long[] ogShape = tensor.dimensionsAsLongArray();
+		if (CommonUtils.int32Overflows(ogShape))
+			throw new IllegalArgumentException("Provided tensor with shape " + Arrays.toString(ogShape) 
+								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE);
 		tensor = Utils.transpose(tensor);
-		PrimitiveBlocks< FloatType > blocks = PrimitiveBlocks.of( tensor );
 		long[] tensorShape = tensor.dimensionsAsLongArray();
-		if (CommonUtils.int32Overflows(tensorShape))
-			throw new IllegalArgumentException("Tensor is too big to handle. Max number of elements allowed in a tensor: " + Integer.MAX_VALUE);
 		int size = 1;
 		for (long ll : tensorShape) size *= ll;
 		final float[] flatArr = new float[size];
 		int[] sArr = new int[tensorShape.length];
 		for (int i = 0; i < sArr.length; i ++)
 			sArr[i] = (int) tensorShape[i];
-		blocks.copy( tensor.minAsLongArray(), flatArr, sArr );
+
+		Cursor<FloatType> cursor = Views.flatIterable(tensor).cursor();
+		int i = 0;
+		while (cursor.hasNext()) {
+			cursor.fwd();
+			flatArr[i ++] = cursor.get().get();
+		}
 		FloatBuffer buff = FloatBuffer.wrap(flatArr);
-		OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
+		OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, ogShape);
 	 	return ndarray;
     }
 
@@ -215,18 +238,25 @@ public final class TensorBuilder
 	 */
     private static OnnxTensor buildDouble(RandomAccessibleInterval<DoubleType> tensor,  OrtEnvironment env) throws OrtException
     {
+		long[] ogShape = tensor.dimensionsAsLongArray();
+		if (CommonUtils.int32Overflows(ogShape))
+			throw new IllegalArgumentException("Provided tensor with shape " + Arrays.toString(ogShape) 
+								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE);
 		tensor = Utils.transpose(tensor);
-		PrimitiveBlocks< DoubleType > blocks = PrimitiveBlocks.of( tensor );
 		long[] tensorShape = tensor.dimensionsAsLongArray();
-		if (CommonUtils.int32Overflows(tensorShape))
-			throw new IllegalArgumentException("Tensor is too big to handle. Max number of elements allowed in a tensor: " + Integer.MAX_VALUE);
 		int size = 1;
 		for (long ll : tensorShape) size *= ll;
 		final double[] flatArr = new double[size];
 		int[] sArr = new int[tensorShape.length];
 		for (int i = 0; i < sArr.length; i ++)
 			sArr[i] = (int) tensorShape[i];
-		blocks.copy( tensor.minAsLongArray(), flatArr, sArr );
+
+		Cursor<DoubleType> cursor = Views.flatIterable(tensor).cursor();
+		int i = 0;
+		while (cursor.hasNext()) {
+			cursor.fwd();
+			flatArr[i ++] = cursor.get().get();
+		}
 		DoubleBuffer buff = DoubleBuffer.wrap(flatArr);
     	OnnxTensor ndarray = OnnxTensor.createTensor(env, buff, tensorShape);
 	 	return ndarray;
