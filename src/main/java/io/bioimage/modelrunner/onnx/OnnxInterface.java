@@ -152,7 +152,7 @@ public class OnnxInterface implements DeepLearningEngineInterface
 				tt.close();
 			}
 			throw new RunModelException("Error trying to run an Onnx model."
-					+ System.lineSeparator() + ex.getCause().toString());
+					+ System.lineSeparator() + ex.toString());
 		}
         
 		// Fill the agnostic output tensors list with data from the inference result
