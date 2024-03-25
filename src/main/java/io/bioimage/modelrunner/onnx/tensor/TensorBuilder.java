@@ -124,7 +124,7 @@ public final class TensorBuilder
     private static OnnxTensor buildByte(RandomAccessibleInterval<ByteType> tensor, OrtEnvironment env) throws OrtException
     {
 		long[] ogShape = tensor.dimensionsAsLongArray();
-		if (CommonUtils.int32Overflows(ogShape))
+		if (CommonUtils.int32Overflows(ogShape, 1))
 			throw new IllegalArgumentException("Provided tensor with shape " + Arrays.toString(ogShape) 
 								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE);
 		tensor = Utils.transpose(tensor);
@@ -162,9 +162,9 @@ public final class TensorBuilder
     private static OnnxTensor buildInt(RandomAccessibleInterval<IntType> tensor, OrtEnvironment env) throws OrtException
     {
 		long[] ogShape = tensor.dimensionsAsLongArray();
-		if (CommonUtils.int32Overflows(ogShape))
+		if (CommonUtils.int32Overflows(ogShape, 4))
 			throw new IllegalArgumentException("Provided tensor with shape " + Arrays.toString(ogShape) 
-								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE);
+								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE / 4);
 		tensor = Utils.transpose(tensor);
 		long[] tensorShape = tensor.dimensionsAsLongArray();
 		int size = 1;
@@ -200,9 +200,9 @@ public final class TensorBuilder
     private static OnnxTensor buildFloat(RandomAccessibleInterval<FloatType> tensor, OrtEnvironment env) throws OrtException
     {
 		long[] ogShape = tensor.dimensionsAsLongArray();
-		if (CommonUtils.int32Overflows(ogShape))
+		if (CommonUtils.int32Overflows(ogShape, 4))
 			throw new IllegalArgumentException("Provided tensor with shape " + Arrays.toString(ogShape) 
-								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE);
+								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE / 4);
 		tensor = Utils.transpose(tensor);
 		long[] tensorShape = tensor.dimensionsAsLongArray();
 		int size = 1;
@@ -238,9 +238,9 @@ public final class TensorBuilder
     private static OnnxTensor buildDouble(RandomAccessibleInterval<DoubleType> tensor,  OrtEnvironment env) throws OrtException
     {
 		long[] ogShape = tensor.dimensionsAsLongArray();
-		if (CommonUtils.int32Overflows(ogShape))
+		if (CommonUtils.int32Overflows(ogShape, 8))
 			throw new IllegalArgumentException("Provided tensor with shape " + Arrays.toString(ogShape) 
-								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE);
+								+ " is too big. Max number of elements per tensor supported: " + Integer.MAX_VALUE / 8);
 		tensor = Utils.transpose(tensor);
 		long[] tensorShape = tensor.dimensionsAsLongArray();
 		int size = 1;
