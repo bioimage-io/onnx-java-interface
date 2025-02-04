@@ -20,6 +20,7 @@
  */
 package io.bioimage.modelrunner.onnx;
 
+import io.bioimage.modelrunner.apposed.appose.Types;
 import io.bioimage.modelrunner.engine.DeepLearningEngineInterface;
 import io.bioimage.modelrunner.exceptions.LoadModelException;
 import io.bioimage.modelrunner.exceptions.RunModelException;
@@ -27,10 +28,9 @@ import io.bioimage.modelrunner.onnx.tensor.ImgLib2Builder;
 import io.bioimage.modelrunner.onnx.tensor.TensorBuilder;
 import io.bioimage.modelrunner.tensor.Tensor;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.img.array.ArrayImgs;
-import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -85,6 +85,7 @@ public class OnnxInterface implements DeepLearningEngineInterface
     {
     }
     
+    /**
     public static void main(String args[]) throws LoadModelException, RunModelException {
     	String folderName = "/home/carlos/git/deep-icy/models/NucleiSegmentationBoundaryModel_27112023_190556";
     	String source = folderName + File.separator + "weights.onnx";
@@ -104,6 +105,7 @@ public class OnnxInterface implements DeepLearningEngineInterface
     	oi.run(inps, outs);
     	System.out.println(false);
     }
+    */
 
 	/**
 	 * {@inheritDoc}
@@ -132,10 +134,12 @@ public class OnnxInterface implements DeepLearningEngineInterface
 	 * 
 	 * Run a Onnx model on the data provided by the {@link Tensor} input list
 	 * and modifies the output list with the results obtained
+	 * @throws RunModelException 
 	 * 
 	 */
 	@Override
-	public void run(List<Tensor<?>> inputTensors, List<Tensor<?>> outputTensors) throws RunModelException {
+	public <T extends RealType<T> & NativeType<T>, R extends RealType<R> & NativeType<R>>
+	void run(List<Tensor<T>> inputTensors, List<Tensor<R>> outputTensors) throws RunModelException {
 		Result output;
 		LinkedHashMap<String, OnnxTensor> inputMap = new LinkedHashMap<String, OnnxTensor>();
 		Iterator<String> inputNames = session.getInputNames().iterator();
@@ -160,10 +164,47 @@ public class OnnxInterface implements DeepLearningEngineInterface
 		for (OnnxTensor tt : inputMap.values()) {
 			tt.close();
 		}
-		for (Object tt : output) {
-			tt = null;
+		output.close();
+	}
+
+	@Override
+	public <T extends RealType<T> & NativeType<T>, R extends RealType<R> & NativeType<R>> List<RandomAccessibleInterval<R>> inference(
+			List<RandomAccessibleInterval<T>> inputs) throws RunModelException {
+		Result output;
+		LinkedHashMap<String, OnnxTensor> inputMap = new LinkedHashMap<String, OnnxTensor>();
+		Iterator<String> inputNames = session.getInputNames().iterator();
+		try {
+	        for (RandomAccessibleInterval<T> tt : inputs) {
+	        	OnnxTensor inT = TensorBuilder.build(tt, env);
+	        	inputMap.put(inputNames.next(), inT);
+	        }
+	        output = session.run(inputMap);
+		} catch (OrtException ex) {
+			for (OnnxTensor tt : inputMap.values()) {
+				tt.close();
+			}
+			throw new RunModelException("Error trying to run an Onnx model."
+					+ System.lineSeparator() + Types.stackTrace(ex));
+		}
+		for (OnnxTensor tt : inputMap.values()) {
+			tt.close();
+		}
+        
+		// Fill the agnostic output tensors list with data from the inference result
+		List<RandomAccessibleInterval<R>> rais = new ArrayList<RandomAccessibleInterval<R>>();
+		for (int i = 0; i < output.size(); i ++) {
+			try {
+				rais.add(ImgLib2Builder.build(output.get(i).getValue()));
+				output.get(i).close();
+			} catch (IllegalArgumentException | OrtException e) {
+				for (int j = i; j < output.size(); j ++)
+					output.get(j).close();
+				output.close();
+				throw new RunModelException("Error converting tensor into RAI" + Types.stackTrace(e));
+			}
 		}
 		output.close();
+		return rais;
 	}
 
 	/**
@@ -179,17 +220,22 @@ public class OnnxInterface implements DeepLearningEngineInterface
 	 * @throws RunModelException If the number of tensors expected is not the same
 	 *           as the number of Tensors outputed by the model
 	 */
-	public static void fillOutputTensors(Result onnxTensors, List<Tensor<?>> outputTensors) throws RunModelException{
+	public static <T extends RealType<T> & NativeType<T>>
+	void fillOutputTensors(Result onnxTensors,
+		List<Tensor<T>> outputTensors) throws RunModelException {
 		if (onnxTensors.size() != outputTensors.size())
 			throw new RunModelException(onnxTensors.size(), outputTensors.size());
 		int cc = 0;
 		for (Tensor tt : outputTensors) {
 			try {
-				tt.setData(ImgLib2Builder.build(onnxTensors.get(cc ++).getValue()));
+				tt.setData(ImgLib2Builder.build(onnxTensors.get(cc).getValue()));
+				onnxTensors.get(cc).close();
+				cc ++;
 			} catch (IllegalArgumentException | OrtException e) {
-				e.printStackTrace();
-				throw new RunModelException("Unable to recover value of output tensor: " + tt.getName()
-								+ System.lineSeparator() + e.getCause().toString());
+				for (int j = cc; j < onnxTensors.size(); j ++)
+					onnxTensors.get(j).close();
+				onnxTensors.close();
+				throw new RunModelException("Error converting tensor '" + tt.getName() + "' into RAI" + Types.stackTrace(e));
 			}
 		}
 	}
