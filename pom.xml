@@ -11,7 +11,7 @@
 
 	<groupId>io.bioimage</groupId>
 	<artifactId>dl-modelrunner-onnx</artifactId>
-	<version>0.4.2-SNAPSHOT</version>
+	<version>0.4.2</version>
 
 	<name>Onnx engine for DL-model-runner</name>
 	<description>This project complements the DL-model runner acting as the engine that works loading models 
@@ -72,7 +72,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/bioimage-io/onnx-java-interface</connection>
 		<developerConnection>scm:git:git@github.com:bioimage-io/onnx-java-interface</developerConnection>
-		<tag>HEAD</tag>
+		<tag>dl-modelrunner-onnx-0.4.2</tag>
 		<url>https://github.com/bioimage-io/onnx-java-interface</url>
 	</scm>
 	<issueManagement>
