@@ -23,6 +23,7 @@ package io.bioimage.modelrunner.onnx;
 import io.bioimage.modelrunner.engine.DeepLearningEngineInterface;
 import io.bioimage.modelrunner.exceptions.LoadModelException;
 import io.bioimage.modelrunner.exceptions.RunModelException;
+import io.bioimage.modelrunner.javaworker.Messages;
 import io.bioimage.modelrunner.onnx.tensor.ImgLib2Builder;
 import io.bioimage.modelrunner.onnx.tensor.TensorBuilder;
 import io.bioimage.modelrunner.tensor.Tensor;
@@ -34,8 +35,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import org.apposed.appose.util.Messages;
 
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
