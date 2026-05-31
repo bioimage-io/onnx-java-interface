@@ -20,7 +20,6 @@
  */
 package io.bioimage.modelrunner.onnx;
 
-import io.bioimage.modelrunner.apposed.appose.Types;
 import io.bioimage.modelrunner.engine.DeepLearningEngineInterface;
 import io.bioimage.modelrunner.exceptions.LoadModelException;
 import io.bioimage.modelrunner.exceptions.RunModelException;
@@ -35,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.apposed.appose.util.Messages;
 
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
@@ -184,7 +185,7 @@ public class OnnxInterface implements DeepLearningEngineInterface
 				tt.close();
 			}
 			throw new RunModelException("Error trying to run an Onnx model."
-					+ System.lineSeparator() + Types.stackTrace(ex));
+					+ System.lineSeparator() + Messages.stackTrace(ex));
 		}
 		for (OnnxTensor tt : inputMap.values()) {
 			tt.close();
@@ -200,7 +201,7 @@ public class OnnxInterface implements DeepLearningEngineInterface
 				for (int j = i; j < output.size(); j ++)
 					output.get(j).close();
 				output.close();
-				throw new RunModelException("Error converting tensor into RAI" + Types.stackTrace(e));
+				throw new RunModelException("Error converting tensor into RAI" + Messages.stackTrace(e));
 			}
 		}
 		output.close();
@@ -235,7 +236,7 @@ public class OnnxInterface implements DeepLearningEngineInterface
 				for (int j = cc; j < onnxTensors.size(); j ++)
 					onnxTensors.get(j).close();
 				onnxTensors.close();
-				throw new RunModelException("Error converting tensor '" + tt.getName() + "' into RAI" + Types.stackTrace(e));
+				throw new RunModelException("Error converting tensor '" + tt.getName() + "' into RAI" + Messages.stackTrace(e));
 			}
 		}
 	}
